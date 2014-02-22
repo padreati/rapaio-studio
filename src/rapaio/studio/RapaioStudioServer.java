@@ -25,8 +25,8 @@ import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ApplicationComponent;
 import org.jetbrains.annotations.NotNull;
-import rapaio.printer.server.ClassMarshaller;
-import rapaio.printer.server.CommandBytes;
+import rapaio.printer.idea.ClassMarshaller;
+import rapaio.printer.idea.CommandBytes;
 
 import javax.imageio.ImageIO;
 import javax.net.ServerSocketFactory;
