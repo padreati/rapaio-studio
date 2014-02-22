@@ -1,15 +1,32 @@
+/*
+ * Apache License
+ * Version 2.0, January 2004
+ * http://www.apache.org/licenses/
+ *
+ *    Copyright 2013 Aurelian Tutuianu
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package rapaio.studio;
 
-import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationDisplayType;
-import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
-import rapaio.graphics.base.Figure;
 import rapaio.printer.FigurePanel;
 
 import javax.swing.*;
@@ -39,18 +56,7 @@ public class RapaioGraphicsToolWindowFactory implements ToolWindowFactory, Exten
         Notifications.Bus.register("Rapaio", NotificationDisplayType.NONE);
     }
 
-    public void setFigure(Figure figure) {
-        if (figurePanel != null) {
-            myToolWindowContent.remove(figurePanel);
-        }
-        figurePanel = new FigurePanel(figure);
-        myToolWindowContent.setLayout(new BorderLayout());
-        myToolWindowContent.add(figurePanel, BorderLayout.CENTER);
-        figurePanel.setVisible(true);
-        figurePanel.paintImmediately(myToolWindowContent.getVisibleRect());
-    }
-
-    public void setImage(BufferedImage image) {
+    public void drawImage(BufferedImage image) {
         if (figurePanel != null) {
             myToolWindowContent.remove(figurePanel);
         }
@@ -63,91 +69,12 @@ public class RapaioGraphicsToolWindowFactory implements ToolWindowFactory, Exten
     }
 
     @Override
-    public int getTextWidth() {
-        return 80;
-    }
-
-    @Override
-    public void setTextWidth(int i) {
-    }
-
-    @Override
-    public int getGraphicWidth() {
+    public int getWidth() {
         return myToolWindow.getComponent().getWidth();
     }
 
     @Override
-    public void setGraphicWidth(int i) {
-    }
-
-    @Override
-    public int getGraphicHeight() {
+    public int getHeight() {
         return myToolWindow.getComponent().getHeight();
-    }
-
-    @Override
-    public void setGraphicHeight(int i) {
-    }
-
-    @Override
-    public void print(String s) {
-        Notifications.Bus.notify(new Notification("Rapaio", "", s, NotificationType.INFORMATION));
-    }
-
-    @Override
-    public void println() {
-        print("\n");
-    }
-
-    @Override
-    public void error(String s, Throwable throwable) {
-        print("Error:" + s);
-    }
-
-    @Override
-    public void preparePrinter() {
-    }
-
-    @Override
-    public void closePrinter() {
-    }
-
-    @Override
-    public void heading(int i, String s) {
-        StringBuilder sb = new StringBuilder();
-        for (int j = 0; j < i; j++) {
-            sb.append("*");
-        }
-        sb.append(" ").append(s).append(" ");
-        for (int j = 0; j < i; j++) {
-            sb.append("*");
-        }
-        sb.append("\n");
-        print(sb.toString());
-    }
-
-    @Override
-    public void code(String s) {
-        print(s);
-    }
-
-    @Override
-    public void p(String s) {
-        print(s);
-    }
-
-    @Override
-    public void eqn(String s) {
-        print(s);
-    }
-
-    @Override
-    public void draw(Figure figure, int i, int i2) {
-        draw(figure);
-    }
-
-    @Override
-    public void draw(Figure figure) {
-        setFigure(figure);
     }
 }
