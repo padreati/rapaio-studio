@@ -116,11 +116,11 @@ public class RapaioStudioServer implements ApplicationComponent {
                             }
 
                         } catch (Exception ex) {
-                            System.out.println("Error running remote command" + ex.getMessage());
+                            System.out.println("Error after accept command: " + ex.getMessage());
                         }
                     }
                 } catch (IOException ex) {
-                    System.out.println("Error running remote command" + ex.getMessage());
+                    System.out.println("Error on main server socket " + ex.getMessage());
                 }
             }
 
@@ -132,8 +132,10 @@ public class RapaioStudioServer implements ApplicationComponent {
             }
 
             private CommandBytes doConfig(CommandBytes cb) throws IOException {
-                cb.setGraphicalWidth(printer.getWidth());
-                cb.setGraphicalHeight(printer.getHeight());
+                if (printer != null) {
+                    cb.setGraphicalWidth(printer.getWidth());
+                    cb.setGraphicalHeight(printer.getHeight());
+                }
                 return cb;
             }
         });
@@ -142,8 +144,11 @@ public class RapaioStudioServer implements ApplicationComponent {
 
     public void shutdown() throws IOException, InterruptedException {
         try {
-            serverSocket.close();
+            if (serverSocket != null) {
+                serverSocket.close();
+            }
         } catch (Throwable ex) {
+            ex.printStackTrace();
         }
         if (listenerThread != null) {
             listenerThread.interrupt();
