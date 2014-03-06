@@ -151,8 +151,7 @@ public class RapaioStudioServer implements ApplicationComponent {
             ex.printStackTrace();
         }
         if (listenerThread != null) {
-            listenerThread.interrupt();
-            listenerThread.join(0);
+            listenerThread.stop();
         }
     }
 }
