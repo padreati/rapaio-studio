@@ -20,8 +20,6 @@
 
 package rapaio.studio;
 
-import com.intellij.notification.NotificationDisplayType;
-import com.intellij.notification.Notifications;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
@@ -49,11 +47,9 @@ public class RapaioGraphicsToolWindowFactory implements ToolWindowFactory, Exten
     public void createToolWindowContent(Project project, ToolWindow toolWindow) {
         this.myToolWindow = toolWindow;
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
-        Content content = contentFactory.createContent(myToolWindowContent, "", false);
+        Content content = contentFactory.createContent(myToolWindowContent, "", true);
         toolWindow.getContentManager().addContent(content);
-
         RapaioStudioServer.getInstance().setExtendedPrinter(this);
-        Notifications.Bus.register("Rapaio", NotificationDisplayType.NONE);
     }
 
     public void drawImage(BufferedImage image) {
@@ -66,6 +62,7 @@ public class RapaioGraphicsToolWindowFactory implements ToolWindowFactory, Exten
         myToolWindowContent.add(figurePanel, BorderLayout.CENTER);
         figurePanel.setVisible(true);
         figurePanel.paintImmediately(myToolWindowContent.getVisibleRect());
+        figurePanel.setSize(myToolWindowContent.getSize());
     }
 
     @Override
