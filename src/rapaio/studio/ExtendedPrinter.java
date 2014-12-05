@@ -20,7 +20,7 @@
 
 package rapaio.studio;
 
-import java.awt.image.BufferedImage;
+import rapaio.graphics.base.Figure;
 
 /**
  * User: Aurelian Tutuianu <paderati@yahoo.com>
@@ -31,5 +31,5 @@ public interface ExtendedPrinter {
 
     int getHeight();
 
-    void drawImage(BufferedImage image);
+    void drawImage(Figure figure);
 }

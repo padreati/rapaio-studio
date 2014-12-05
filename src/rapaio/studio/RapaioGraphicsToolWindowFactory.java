@@ -25,10 +25,14 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
+import rapaio.graphics.base.Figure;
+import rapaio.graphics.base.ImageUtility;
 import rapaio.printer.FigurePanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 
 /**
@@ -39,6 +43,7 @@ public class RapaioGraphicsToolWindowFactory implements ToolWindowFactory, Exten
     private ToolWindow myToolWindow;
     private JPanel myToolWindowContent;
     private FigurePanel figurePanel;
+    private Figure figure;
 
     public RapaioGraphicsToolWindowFactory() {
     }
@@ -50,13 +55,34 @@ public class RapaioGraphicsToolWindowFactory implements ToolWindowFactory, Exten
         Content content = contentFactory.createContent(myToolWindowContent, "", true);
         toolWindow.getContentManager().addContent(content);
         RapaioStudioServer.getInstance().setExtendedPrinter(this);
+
+        myToolWindow.getComponent().getParent().addComponentListener(new MainListener(this));
     }
 
-    public void drawImage(BufferedImage image) {
+    public void drawImage(Figure figure) {
+        this.figure = figure;
         if (figurePanel != null) {
             myToolWindowContent.remove(figurePanel);
         }
-        figurePanel = new FigurePanel(image);
+        BufferedImage bi = ImageUtility.buildImage(figure, getWidth(), getHeight());
+        figurePanel = new FigurePanel(bi);
+        figurePanel.setVisible(true);
+        myToolWindowContent.setLayout(new BorderLayout());
+        myToolWindowContent.add(figurePanel, BorderLayout.CENTER);
+        figurePanel.setVisible(true);
+        figurePanel.paintImmediately(myToolWindowContent.getVisibleRect());
+        figurePanel.setSize(myToolWindowContent.getSize());
+    }
+
+    public void repaintFigure() {
+        if (figure == null)
+            return;
+
+        if (figurePanel != null) {
+            myToolWindowContent.remove(figurePanel);
+        }
+        BufferedImage bi = ImageUtility.buildImage(figure, getWidth(), getHeight());
+        figurePanel = new FigurePanel(bi);
         figurePanel.setVisible(true);
         myToolWindowContent.setLayout(new BorderLayout());
         myToolWindowContent.add(figurePanel, BorderLayout.CENTER);
@@ -67,11 +93,40 @@ public class RapaioGraphicsToolWindowFactory implements ToolWindowFactory, Exten
 
     @Override
     public int getWidth() {
-        return myToolWindow.getComponent().getWidth();
+        return myToolWindow.getComponent().getParent().getWidth();
     }
 
     @Override
     public int getHeight() {
-        return myToolWindow.getComponent().getHeight();
+        return myToolWindow.getComponent().getParent().getHeight();
+    }
+
+    private class MainListener implements ComponentListener {
+
+        private final RapaioGraphicsToolWindowFactory parent;
+
+        private MainListener(RapaioGraphicsToolWindowFactory parent) {
+            this.parent = parent;
+        }
+
+        @Override
+        public void componentResized(ComponentEvent e) {
+            parent.repaintFigure();
+        }
+
+        @Override
+        public void componentMoved(ComponentEvent e) {
+
+        }
+
+        @Override
+        public void componentShown(ComponentEvent e) {
+
+        }
+
+        @Override
+        public void componentHidden(ComponentEvent e) {
+
+        }
     }
 }

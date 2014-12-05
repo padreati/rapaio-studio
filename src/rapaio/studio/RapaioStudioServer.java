@@ -25,15 +25,15 @@ import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ApplicationComponent;
 import org.jetbrains.annotations.NotNull;
+import rapaio.graphics.base.Figure;
 import rapaio.printer.idea.ClassMarshaller;
 import rapaio.printer.idea.CommandBytes;
 
-import javax.imageio.ImageIO;
 import javax.net.ServerSocketFactory;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -124,11 +124,11 @@ public class RapaioStudioServer implements ApplicationComponent {
                 }
             }
 
-            private void doDraw(CommandBytes cb) throws IOException {
+            private void doDraw(CommandBytes cb) throws IOException, ClassNotFoundException {
                 InputStream in = new ByteArrayInputStream(cb.getBytes());
-                final BufferedImage image = ImageIO.read(in);
+                final Figure figure = (Figure) new ObjectInputStream(in).readObject();
                 if (printer != null)
-                    printer.drawImage(image);
+                    printer.drawImage(figure);
             }
 
             private CommandBytes doConfig(CommandBytes cb) throws IOException {
