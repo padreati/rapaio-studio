@@ -27,7 +27,7 @@ import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import rapaio.graphics.base.Figure;
 import rapaio.graphics.base.ImageUtility;
-import rapaio.printer.FigurePanel;
+import rapaio.printer.local.FigurePanel;
 
 import javax.swing.*;
 import java.awt.*;
