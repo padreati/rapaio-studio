@@ -144,6 +144,7 @@ public class RapaioStudioServer implements ApplicationComponent {
         listenerThread.start();
     }
 
+    @SuppressWarnings("deprecation")
     public void shutdown() throws IOException, InterruptedException {
         try {
             if (serverSocket != null) {
