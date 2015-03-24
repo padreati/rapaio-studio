@@ -46,6 +46,7 @@ public class RapaioGraphicsToolWindowFactory implements ToolWindowFactory, Exten
     private JPanel myToolWindowContent;
     private FigurePanel figurePanel;
     private Figure figure;
+    private BufferedImage bi;
 
     public RapaioGraphicsToolWindowFactory() {
     }
@@ -63,6 +64,7 @@ public class RapaioGraphicsToolWindowFactory implements ToolWindowFactory, Exten
 
     public void drawImage(Figure figure) {
         this.figure = figure;
+        this.bi = null;
         if (figurePanel != null) {
             myToolWindowContent.remove(figurePanel);
         }
@@ -76,9 +78,37 @@ public class RapaioGraphicsToolWindowFactory implements ToolWindowFactory, Exten
         figurePanel.setSize(myToolWindowContent.getSize());
     }
 
+    public void drawImage(BufferedImage bi) {
+        this.figure = null;
+        this.bi = bi;
+        if (figurePanel != null) {
+            myToolWindowContent.remove(figurePanel);
+        }
+        figurePanel = new FigurePanel(bi);
+        figurePanel.setVisible(true);
+        myToolWindowContent.setLayout(new BorderLayout());
+        myToolWindowContent.add(figurePanel, BorderLayout.CENTER);
+        figurePanel.setVisible(true);
+        figurePanel.paintImmediately(myToolWindowContent.getVisibleRect());
+        figurePanel.setSize(myToolWindowContent.getSize());
+    }
+
     public void repaintFigure() {
-        if (figure == null)
+        if (figure == null) {
+            if (bi == null)
+                return;
+            if (figurePanel != null) {
+                myToolWindowContent.remove(figurePanel);
+            }
+            figurePanel = new FigurePanel(bi);
+            figurePanel.setVisible(true);
+            myToolWindowContent.setLayout(new BorderLayout());
+            myToolWindowContent.add(figurePanel, BorderLayout.CENTER);
+            figurePanel.setVisible(true);
+            figurePanel.paintImmediately(myToolWindowContent.getVisibleRect());
+            figurePanel.setSize(myToolWindowContent.getSize());
             return;
+        }
 
         if (figurePanel != null) {
             myToolWindowContent.remove(figurePanel);

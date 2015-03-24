@@ -31,7 +31,9 @@ import rapaio.graphics.base.Figure;
 import rapaio.printer.idea.ClassMarshaller;
 import rapaio.printer.idea.CommandBytes;
 
+import javax.imageio.ImageIO;
 import javax.net.ServerSocketFactory;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -109,11 +111,15 @@ public class RapaioStudioServer implements ApplicationComponent {
                                     cb = doConfig(cb);
                                     new ClassMarshaller().marshallConfig(s.getOutputStream(), cb);
                                     s.getOutputStream().flush();
-                                    doDraw(new ClassMarshaller().unmarshall(s.getInputStream()));
+                                    doImage(new ClassMarshaller().unmarshall(s.getInputStream()));
                                     break;
 
                                 case DRAW:
                                     doDraw(cb);
+                                    break;
+
+                                case IMAGE:
+                                    doImage(cb);
                                     break;
                             }
 
@@ -131,6 +137,13 @@ public class RapaioStudioServer implements ApplicationComponent {
                 final Figure figure = (Figure) new ObjectInputStream(in).readObject();
                 if (printer != null)
                     printer.drawImage(figure);
+            }
+
+            private void doImage(CommandBytes cb) throws IOException, ClassNotFoundException {
+                InputStream in = new ByteArrayInputStream(cb.getBytes());
+                final BufferedImage image = ImageIO.read(in);
+                if (printer != null)
+                    printer.drawImage(image);
             }
 
             private CommandBytes doConfig(CommandBytes cb) throws IOException {
