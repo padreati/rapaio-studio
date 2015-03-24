@@ -27,6 +27,7 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
+import org.jetbrains.annotations.NotNull;
 import rapaio.graphics.base.Figure;
 import rapaio.graphics.base.ImageUtility;
 import rapaio.printer.local.FigurePanel;
@@ -52,7 +53,7 @@ public class RapaioGraphicsToolWindowFactory implements ToolWindowFactory, Exten
     }
 
     @Override
-    public void createToolWindowContent(Project project, ToolWindow toolWindow) {
+    public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
         this.myToolWindow = toolWindow;
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
         Content content = contentFactory.createContent(myToolWindowContent, "", true);
