@@ -18,6 +18,7 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
+ *
  */
 
 package rapaio.printer;
@@ -29,6 +30,7 @@ import java.awt.image.BufferedImage;
 /**
  * @author <a href="mailto:padreati@yahoo.com">Aurelian Tutuianu</a>
  */
+@Deprecated
 public class FigurePanel extends JPanel {
 
     protected volatile BufferedImage currentImage;
