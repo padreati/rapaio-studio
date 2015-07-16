@@ -46,7 +46,7 @@ import java.awt.image.BufferedImage;
 public class RapaioGraphicsToolWindowFactory implements ToolWindowFactory, ExtendedPrinter {
 
     private ToolWindow myToolWindow;
-    private JPanel myToolWindowContent;
+    private JPanel myToolWindowContent = new JPanel();
     private FigurePanel figurePanel;
     private Figure figure;
     private BufferedImage bi;
@@ -58,10 +58,9 @@ public class RapaioGraphicsToolWindowFactory implements ToolWindowFactory, Exten
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
         this.myToolWindow = toolWindow;
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
-        Content content = contentFactory.createContent(myToolWindowContent, "", true);
-        toolWindow.getContentManager().addContent(content);
+        Content content = contentFactory.createContent(myToolWindowContent, "", false);
+        myToolWindow.getContentManager().addContent(content);
         RapaioStudioServer.getInstance().setExtendedPrinter(this);
-
         myToolWindow.getComponent().getParent().addComponentListener(new MainListener(this));
     }
 
