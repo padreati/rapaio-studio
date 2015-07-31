@@ -90,14 +90,11 @@ public class FigurePanel extends JPanel {
                             repaint();
                         } catch (Exception ex) {
                             ex.printStackTrace();
-                            System.exit(0);
                         }
                     }
                 });
-
             }
         };
-
         drawWorker.execute();
     }
 }

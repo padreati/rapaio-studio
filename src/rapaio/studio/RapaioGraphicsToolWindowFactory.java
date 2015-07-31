@@ -67,32 +67,13 @@ public class RapaioGraphicsToolWindowFactory implements ToolWindowFactory, Exten
     public void drawImage(Figure figure) {
         this.figure = figure;
         this.bi = null;
-        if (figurePanel != null) {
-            myToolWindowContent.remove(figurePanel);
-        }
-        BufferedImage bi = ImageUtility.buildImage(figure, getWidth(), getHeight());
-        figurePanel = new FigurePanel(bi);
-        figurePanel.setVisible(true);
-        myToolWindowContent.setLayout(new BorderLayout());
-        myToolWindowContent.add(figurePanel, BorderLayout.CENTER);
-        figurePanel.setVisible(true);
-        figurePanel.paintImmediately(myToolWindowContent.getVisibleRect());
-        figurePanel.setSize(myToolWindowContent.getSize());
+        repaintFigure();
     }
 
     public void drawImage(BufferedImage bi) {
         this.figure = null;
         this.bi = bi;
-        if (figurePanel != null) {
-            myToolWindowContent.remove(figurePanel);
-        }
-        figurePanel = new FigurePanel(bi);
-        figurePanel.setVisible(true);
-        myToolWindowContent.setLayout(new BorderLayout());
-        myToolWindowContent.add(figurePanel, BorderLayout.CENTER);
-        figurePanel.setVisible(true);
-        figurePanel.paintImmediately(myToolWindowContent.getVisibleRect());
-        figurePanel.setSize(myToolWindowContent.getSize());
+        repaintFigure();
     }
 
     public void repaintFigure() {
