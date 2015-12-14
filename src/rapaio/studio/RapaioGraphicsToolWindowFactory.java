@@ -88,6 +88,7 @@ public class RapaioGraphicsToolWindowFactory implements ToolWindowFactory, Exten
             myToolWindowContent.setLayout(new BorderLayout());
             myToolWindowContent.add(figurePanel, BorderLayout.CENTER);
             figurePanel.setVisible(true);
+            figurePanel.revalidate();
             figurePanel.paintImmediately(myToolWindowContent.getVisibleRect());
             figurePanel.setSize(myToolWindowContent.getSize());
             return;
@@ -102,6 +103,7 @@ public class RapaioGraphicsToolWindowFactory implements ToolWindowFactory, Exten
         myToolWindowContent.setLayout(new BorderLayout());
         myToolWindowContent.add(figurePanel, BorderLayout.CENTER);
         figurePanel.setVisible(true);
+        figurePanel.revalidate();
         figurePanel.paintImmediately(myToolWindowContent.getVisibleRect());
         figurePanel.setSize(myToolWindowContent.getSize());
     }

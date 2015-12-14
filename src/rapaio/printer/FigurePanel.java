@@ -26,12 +26,14 @@ package rapaio.printer;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author <a href="mailto:padreati@yahoo.com">Aurelian Tutuianu</a>
  */
-@Deprecated
 public class FigurePanel extends JPanel {
+
+    private static final long serialVersionUID = 4530584484290846731L;
 
     protected volatile BufferedImage currentImage;
     protected volatile SwingWorker<BufferedImage, Object> drawWorker;
@@ -80,19 +82,23 @@ public class FigurePanel extends JPanel {
             @Override
             protected void done() {
 
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            currentImage = get();
-                            drawWorker = null;
-                            revalidate();
-                            repaint();
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
+                try {
+                    SwingUtilities.invokeAndWait(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                currentImage = get();
+                                drawWorker = null;
+                                revalidate();
+                                repaint();
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
                         }
-                    }
-                });
+                    });
+                } catch (InterruptedException | InvocationTargetException e) {
+                    e.printStackTrace();
+                }
             }
         };
         drawWorker.execute();
