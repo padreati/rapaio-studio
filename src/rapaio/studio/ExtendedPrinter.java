@@ -31,7 +31,6 @@ import java.awt.image.BufferedImage;
 /**
  * User: Aurelian Tutuianu <paderati@yahoo.com>
  */
-@Deprecated
 public interface ExtendedPrinter {
 
     int getWidth();

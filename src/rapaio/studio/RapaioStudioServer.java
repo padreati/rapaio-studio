@@ -127,11 +127,13 @@ public class RapaioStudioServer implements ApplicationComponent {
                             }
 
                         } catch (Exception ex) {
-                            System.out.println("Error after accept command: " + ex.getMessage());
+                            Notifications.Bus.notify(
+                                    new Notification(RAPAIO_GROUP_ID_INFO, "Error after accept command.", ex.getMessage(), NotificationType.ERROR));
                         }
                     }
                 } catch (IOException ex) {
-                    System.out.println("Error on main server socket " + ex.getMessage());
+                    Notifications.Bus.notify(
+                            new Notification(RAPAIO_GROUP_ID_INFO, "Error on main server socket.", ex.getMessage(), NotificationType.ERROR));
                 }
             }
 
@@ -167,7 +169,8 @@ public class RapaioStudioServer implements ApplicationComponent {
                 serverSocket.close();
             }
         } catch (Throwable ex) {
-            ex.printStackTrace();
+            Notifications.Bus.notify(
+                    new Notification(RAPAIO_GROUP_ID_INFO, "Error at shutdown", ex.getMessage(), NotificationType.ERROR));
         }
         if (listenerThread != null) {
             listenerThread.stop();
