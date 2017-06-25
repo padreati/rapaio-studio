@@ -7,6 +7,7 @@
  *    Copyright 2014 Aurelian Tutuianu
  *    Copyright 2015 Aurelian Tutuianu
  *    Copyright 2016 Aurelian Tutuianu
+ *    Copyright 2017 Aurelian Tutuianu
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -24,6 +25,9 @@
 
 package rapaio.studio;
 
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
@@ -39,6 +43,10 @@ import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * User: Aurelian Tutuianu <paderati@yahoo.com>
@@ -50,7 +58,7 @@ public class RapaioGraphicsToolWindowFactory implements ToolWindowFactory, Exten
     private JPanel myToolWindowContent = new JPanel();
     private FigurePanel figurePanel;
     private Figure figure;
-    private BufferedImage bi;
+    private Lock figureLock = new ReentrantLock();
 
     public RapaioGraphicsToolWindowFactory() {
     }
@@ -67,23 +75,20 @@ public class RapaioGraphicsToolWindowFactory implements ToolWindowFactory, Exten
 
     public void drawImage(Figure figure) {
         this.figure = figure;
-        this.bi = null;
+        figureLock.lock();
         repaintFigure();
-    }
-
-    public void drawImage(BufferedImage bi) {
-        this.figure = null;
-        this.bi = bi;
-        repaintFigure();
+        figureLock.unlock();
     }
 
     public void repaintFigure() {
-        if (figure == null) {
-            if (bi == null)
+        if (figurePanel != null) {
+            myToolWindowContent.remove(figurePanel);
+        }
+        try {
+            if (figure == null) {
                 return;
-            if (figurePanel != null) {
-                myToolWindowContent.remove(figurePanel);
             }
+            BufferedImage bi = ImageUtility.buildImage(figure, getWidth(), getHeight());
             figurePanel = new FigurePanel(bi);
             figurePanel.setVisible(true);
             myToolWindowContent.setLayout(new BorderLayout());
@@ -92,21 +97,10 @@ public class RapaioGraphicsToolWindowFactory implements ToolWindowFactory, Exten
             figurePanel.revalidate();
             figurePanel.paintImmediately(myToolWindowContent.getVisibleRect());
             figurePanel.setSize(myToolWindowContent.getSize());
-            return;
+        } catch (RuntimeException ex) {
+            Notifications.Bus.notify(
+                    new Notification(RapaioStudioServer.RAPAIO_GROUP_ID_INFO, "Error after accept command.", ex.getMessage(), NotificationType.WARNING));
         }
-
-        if (figurePanel != null) {
-            myToolWindowContent.remove(figurePanel);
-        }
-        BufferedImage bi = ImageUtility.buildImage(figure, getWidth(), getHeight());
-        figurePanel = new FigurePanel(bi);
-        figurePanel.setVisible(true);
-        myToolWindowContent.setLayout(new BorderLayout());
-        myToolWindowContent.add(figurePanel, BorderLayout.CENTER);
-        figurePanel.setVisible(true);
-        figurePanel.revalidate();
-        figurePanel.paintImmediately(myToolWindowContent.getVisibleRect());
-        figurePanel.setSize(myToolWindowContent.getSize());
     }
 
     @Override
@@ -129,22 +123,30 @@ public class RapaioGraphicsToolWindowFactory implements ToolWindowFactory, Exten
 
         @Override
         public void componentResized(ComponentEvent e) {
-            parent.repaintFigure();
+            if (figureLock.tryLock()) {
+                parent.repaintFigure();
+                figureLock.unlock();
+            }
         }
 
         @Override
         public void componentMoved(ComponentEvent e) {
-
+            if (figureLock.tryLock()) {
+                parent.repaintFigure();
+                figureLock.unlock();
+            }
         }
 
         @Override
         public void componentShown(ComponentEvent e) {
-
+            if (figureLock.tryLock()) {
+                parent.repaintFigure();
+                figureLock.unlock();
+            }
         }
 
         @Override
         public void componentHidden(ComponentEvent e) {
-
         }
     }
 }

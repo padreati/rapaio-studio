@@ -7,6 +7,7 @@
  *    Copyright 2014 Aurelian Tutuianu
  *    Copyright 2015 Aurelian Tutuianu
  *    Copyright 2016 Aurelian Tutuianu
+ *    Copyright 2017 Aurelian Tutuianu
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -36,10 +37,7 @@ import rapaio.printer.idea.CommandBytes;
 import javax.imageio.ImageIO;
 import javax.net.ServerSocketFactory;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -73,6 +71,12 @@ public class RapaioStudioServer implements ApplicationComponent {
         } catch (Exception ex) {
             Notifications.Bus.notify(
                     new Notification(RAPAIO_GROUP_ID_INFO, "Error", ex.getMessage(), NotificationType.ERROR));
+
+            StringWriter sw = new StringWriter();
+            ex.printStackTrace(new PrintWriter(sw));
+
+            Notifications.Bus.notify(
+                    new Notification(RAPAIO_GROUP_ID_INFO, "Stack trace:", sw.toString(), NotificationType.ERROR));
         }
     }
 
@@ -82,6 +86,12 @@ public class RapaioStudioServer implements ApplicationComponent {
         } catch (Exception ex) {
             Notifications.Bus.notify(
                     new Notification(RAPAIO_GROUP_ID_INFO, "Error", ex.getMessage(), NotificationType.ERROR));
+
+            StringWriter sw = new StringWriter();
+            ex.printStackTrace(new PrintWriter(sw));
+
+            Notifications.Bus.notify(
+                    new Notification(RAPAIO_GROUP_ID_INFO, "Stack trace:", sw.toString(), NotificationType.ERROR));
         }
     }
 
@@ -110,30 +120,31 @@ public class RapaioStudioServer implements ApplicationComponent {
                             }
                             CommandBytes cb = new ClassMarshaller().unmarshall(s.getInputStream());
                             switch (cb.getType()) {
-                                case CONFIG:
-                                    cb = doConfig(cb);
-                                    new ClassMarshaller().marshallConfig(s.getOutputStream(), cb);
-                                    s.getOutputStream().flush();
-                                    doImage(new ClassMarshaller().unmarshall(s.getInputStream()));
-                                    break;
-
                                 case DRAW:
                                     doDraw(cb);
-                                    break;
-
-                                case IMAGE:
-                                    doImage(cb);
                                     break;
                             }
 
                         } catch (Exception ex) {
                             Notifications.Bus.notify(
                                     new Notification(RAPAIO_GROUP_ID_INFO, "Error after accept command.", ex.getMessage(), NotificationType.ERROR));
+
+                            StringWriter sw = new StringWriter();
+                            ex.printStackTrace(new PrintWriter(sw));
+
+                            Notifications.Bus.notify(
+                                    new Notification(RAPAIO_GROUP_ID_INFO, "Stack trace:", sw.toString(), NotificationType.ERROR));
                         }
                     }
                 } catch (IOException ex) {
                     Notifications.Bus.notify(
                             new Notification(RAPAIO_GROUP_ID_INFO, "Error on main server socket.", ex.getMessage(), NotificationType.ERROR));
+
+                    StringWriter sw = new StringWriter();
+                    ex.printStackTrace(new PrintWriter(sw));
+
+                    Notifications.Bus.notify(
+                            new Notification(RAPAIO_GROUP_ID_INFO, "Stack trace:", sw.toString(), NotificationType.ERROR));
                 }
             }
 
@@ -142,13 +153,6 @@ public class RapaioStudioServer implements ApplicationComponent {
                 final Figure figure = (Figure) new ObjectInputStream(in).readObject();
                 if (printer != null)
                     printer.drawImage(figure);
-            }
-
-            private void doImage(CommandBytes cb) throws IOException, ClassNotFoundException {
-                InputStream in = new ByteArrayInputStream(cb.getBytes());
-                final BufferedImage image = ImageIO.read(in);
-                if (printer != null)
-                    printer.drawImage(image);
             }
 
             private CommandBytes doConfig(CommandBytes cb) throws IOException {
@@ -171,6 +175,12 @@ public class RapaioStudioServer implements ApplicationComponent {
         } catch (Throwable ex) {
             Notifications.Bus.notify(
                     new Notification(RAPAIO_GROUP_ID_INFO, "Error at shutdown", ex.getMessage(), NotificationType.ERROR));
+
+            StringWriter sw = new StringWriter();
+            ex.printStackTrace(new PrintWriter(sw));
+
+            Notifications.Bus.notify(
+                    new Notification(RAPAIO_GROUP_ID_INFO, "Stack trace:", sw.toString(), NotificationType.ERROR));
         }
         if (listenerThread != null) {
             listenerThread.stop();
