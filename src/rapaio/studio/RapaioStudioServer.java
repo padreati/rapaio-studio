@@ -115,6 +115,7 @@ public class RapaioStudioServer implements ApplicationComponent {
                     while (true) {
                         try {
                             Socket s = serverSocket.accept();
+                            s.setSoTimeout(500);
                             if (serverSocket.isClosed()) {
                                 return;
                             }
@@ -124,7 +125,7 @@ public class RapaioStudioServer implements ApplicationComponent {
                                     doDraw(cb);
                                     break;
                             }
-
+                            s.close();
                         } catch (Exception ex) {
                             Notifications.Bus.notify(
                                     new Notification(RAPAIO_GROUP_ID_INFO, "Error after accept command.", ex.getMessage(), NotificationType.ERROR));
