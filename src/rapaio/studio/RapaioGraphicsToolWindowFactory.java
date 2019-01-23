@@ -36,24 +36,20 @@ import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import org.jetbrains.annotations.NotNull;
-import rapaio.graphics.base.Figure;
-import rapaio.graphics.base.ImageUtility;
-import rapaio.printer.local.FigurePanel;
+import rapaio.graphics.base.*;
+import rapaio.printer.local.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * User: Aurelian Tutuianu <paderati@yahoo.com>
  */
-@Deprecated
 public class RapaioGraphicsToolWindowFactory implements ToolWindowFactory, ExtendedPrinter {
 
     private ToolWindow myToolWindow;

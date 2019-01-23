@@ -32,21 +32,22 @@ import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ApplicationComponent;
 import org.jetbrains.annotations.NotNull;
-import rapaio.graphics.base.Figure;
-import rapaio.printer.idea.ClassMarshaller;
-import rapaio.printer.idea.CommandBytes;
+import rapaio.graphics.base.*;
+import rapaio.printer.idea.*;
 
-import javax.imageio.ImageIO;
 import javax.net.ServerSocketFactory;
-import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
  * User: Aurelian Tutuianu <paderati@yahoo.com>
  */
-@Deprecated
 public class RapaioStudioServer implements ApplicationComponent {
 
     public static final int DEFAULT_PORT = 56339;
