@@ -74,8 +74,11 @@ public class RapaioGraphicsToolWindowFactory implements ToolWindowFactory, Exten
     public void drawImage(Figure figure) {
         this.figure = figure;
         figureLock.lock();
-        repaintFigure();
-        figureLock.unlock();
+        try {
+            repaintFigure();
+        } finally {
+            figureLock.unlock();
+        }
     }
 
     public void repaintFigure() {

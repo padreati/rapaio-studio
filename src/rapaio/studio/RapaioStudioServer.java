@@ -98,8 +98,20 @@ public class RapaioStudioServer implements ApplicationComponent {
         }
     }
 
+    public ExtendedPrinter getPrinter() {
+        return printer;
+    }
+
     public void setExtendedPrinter(ExtendedPrinter printer) {
         this.printer = printer;
+    }
+
+    void setServerSocket(ServerSocket serverSocket) {
+        this.serverSocket = serverSocket;
+    }
+
+    ServerSocket getServerSocket() {
+        return serverSocket;
     }
 
     @NotNull
@@ -109,72 +121,18 @@ public class RapaioStudioServer implements ApplicationComponent {
 
     private Thread listenerThread;
 
-    public void start() throws IOException {
-        listenerThread = new Thread(new Runnable() {
-
-            public void run() {
-                try {
-                    serverSocket = ServerSocketFactory.getDefault().createServerSocket(DEFAULT_PORT);
-                    while (true) {
-                        try {
-                            Socket s = serverSocket.accept();
-                            if (serverSocket.isClosed()) {
-                                return;
-                            }
-                            CommandBytes cb = new ClassMarshaller().unmarshall(s.getInputStream());
-                            switch (cb.getType()) {
-                                case DRAW:
-                                    doDraw(cb);
-                                    break;
-                            }
-                        } catch (Exception ex) {
-                            Notifications.Bus.notify(
-                                    new Notification(RAPAIO_GROUP_ID_INFO, "Error after accept command.", ex.getMessage(), NotificationType.ERROR));
-
-                            StringWriter sw = new StringWriter();
-                            ex.printStackTrace(new PrintWriter(sw));
-
-                            Notifications.Bus.notify(
-                                    new Notification(RAPAIO_GROUP_ID_INFO, "Stack trace:", sw.toString(), NotificationType.ERROR));
-                        }
-                    }
-                } catch (IOException ex) {
-                    Notifications.Bus.notify(
-                            new Notification(RAPAIO_GROUP_ID_INFO, "Error on main server socket.", ex.getMessage(), NotificationType.ERROR));
-
-                    StringWriter sw = new StringWriter();
-                    ex.printStackTrace(new PrintWriter(sw));
-
-                    Notifications.Bus.notify(
-                            new Notification(RAPAIO_GROUP_ID_INFO, "Stack trace:", sw.toString(), NotificationType.ERROR));
-                }
-            }
-
-            private void doDraw(CommandBytes cb) throws IOException, ClassNotFoundException {
-                InputStream in = new ByteArrayInputStream(cb.getBytes());
-                final Figure figure = (Figure) new ObjectInputStream(in).readObject();
-                if (printer != null)
-                    printer.drawImage(figure);
-            }
-
-            private CommandBytes doConfig(CommandBytes cb) throws IOException {
-                if (printer != null) {
-                    cb.setGraphicalWidth(printer.getWidth());
-                    cb.setGraphicalHeight(printer.getHeight());
-                }
-                return cb;
-            }
-        });
+    public void start() {
+        listenerThread = new WorkingThread(this);
         listenerThread.start();
     }
 
     @SuppressWarnings("deprecation")
-    public void shutdown() throws IOException, InterruptedException {
+    public void shutdown() {
         try {
             if (serverSocket != null) {
                 serverSocket.close();
             }
-        } catch (Throwable ex) {
+        } catch (IOException ex) {
             Notifications.Bus.notify(
                     new Notification(RAPAIO_GROUP_ID_INFO, "Error at shutdown", ex.getMessage(), NotificationType.ERROR));
 
@@ -187,5 +145,68 @@ public class RapaioStudioServer implements ApplicationComponent {
         if (listenerThread != null) {
             listenerThread.stop();
         }
+    }
+}
+
+
+class WorkingThread extends Thread {
+
+    private final RapaioStudioServer parent;
+
+    public WorkingThread(RapaioStudioServer parent) {
+        this.parent = parent;
+    }
+
+    public void run() {
+        try {
+            parent.setServerSocket(ServerSocketFactory.getDefault().createServerSocket(RapaioStudioServer.DEFAULT_PORT));
+            while (true) {
+                try {
+                    Socket s = parent.getServerSocket().accept();
+                    if (parent.getServerSocket().isClosed()) {
+                        return;
+                    }
+                    CommandBytes cb = new ClassMarshaller().unmarshall(s.getInputStream());
+                    switch (cb.getType()) {
+                        case DRAW:
+                            doDraw(cb);
+                            break;
+                    }
+                } catch (Exception ex) {
+                    Notifications.Bus.notify(
+                            new Notification(RapaioStudioServer.RAPAIO_GROUP_ID_INFO, "Error after accept command.", ex.getMessage(), NotificationType.ERROR));
+
+                    StringWriter sw = new StringWriter();
+                    ex.printStackTrace(new PrintWriter(sw));
+
+                    Notifications.Bus.notify(
+                            new Notification(RapaioStudioServer.RAPAIO_GROUP_ID_INFO, "Stack trace:", sw.toString(), NotificationType.ERROR));
+                }
+            }
+        } catch (IOException ex) {
+            Notifications.Bus.notify(
+                    new Notification(RapaioStudioServer.RAPAIO_GROUP_ID_INFO, "Error on main server socket.", ex.getMessage(), NotificationType.ERROR));
+
+            StringWriter sw = new StringWriter();
+            ex.printStackTrace(new PrintWriter(sw));
+
+            Notifications.Bus.notify(
+                    new Notification(RapaioStudioServer.RAPAIO_GROUP_ID_INFO, "Stack trace:", sw.toString(), NotificationType.ERROR));
+        }
+    }
+
+    private void doDraw(CommandBytes cb) throws IOException, ClassNotFoundException {
+        InputStream in = new ByteArrayInputStream(cb.getBytes());
+        final Figure figure = (Figure) new ObjectInputStream(in).readObject();
+        if (parent.getPrinter() != null)
+            parent.getPrinter().drawImage(figure);
+    }
+
+    private CommandBytes doConfig(CommandBytes cb) throws IOException {
+        if (parent.getPrinter() != null) {
+            cb.setGraphicalWidth(parent.getPrinter().getWidth());
+            cb.setGraphicalHeight(parent.getPrinter().getHeight());
+        }
+        return cb;
     }
 }
