@@ -31,11 +31,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author <a href="mailto:padreati@yahoo.com">Aurelian Tutuianu</a>
  */
 public class FigurePanel extends JPanel {
+
+    private static final Logger logger = Logger.getLogger(FigurePanel.class.getName());
 
     private static final long serialVersionUID = 4530584484290846731L;
 
@@ -101,7 +105,7 @@ public class FigurePanel extends JPanel {
                         }
                     });
                 } catch (InterruptedException | InvocationTargetException e) {
-                    e.printStackTrace();
+                    logger.log(Level.INFO, e.getMessage());
                 }
             }
         };
