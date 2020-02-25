@@ -32,8 +32,9 @@ import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ApplicationComponent;
 import org.jetbrains.annotations.NotNull;
-import rapaio.graphics.base.*;
-import rapaio.printer.idea.*;
+import rapaio.graphics.base.Figure;
+import rapaio.printer.idea.ClassMarshaller;
+import rapaio.printer.idea.CommandBytes;
 
 import javax.net.ServerSocketFactory;
 import java.io.ByteArrayInputStream;
@@ -50,8 +51,9 @@ import java.net.Socket;
  */
 public class RapaioStudioServer implements ApplicationComponent {
 
-    public static final int DEFAULT_PORT = 56339;
     public static final String RAPAIO_GROUP_ID_INFO = "RapaioInfo";
+    public static final int DEFAULT_PORT = 56739;
+
     private static RapaioStudioServer instance;
 
     public static RapaioStudioServer getInstance() {
@@ -202,7 +204,7 @@ class WorkingThread extends Thread {
             parent.getPrinter().drawImage(figure);
     }
 
-    private CommandBytes doConfig(CommandBytes cb) throws IOException {
+    private CommandBytes doConfig(CommandBytes cb) {
         if (parent.getPrinter() != null) {
             cb.setGraphicalWidth(parent.getPrinter().getWidth());
             cb.setGraphicalHeight(parent.getPrinter().getHeight());
