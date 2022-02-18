@@ -32,7 +32,8 @@ import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ApplicationComponent;
 import org.jetbrains.annotations.NotNull;
-import rapaio.graphics.base.Figure;
+
+import rapaio.graphics.Figure;
 import rapaio.printer.idea.ClassMarshaller;
 import rapaio.printer.idea.CommandBytes;
 

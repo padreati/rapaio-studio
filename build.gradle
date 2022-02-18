@@ -1,0 +1,31 @@
+plugins {
+    id 'org.jetbrains.intellij' version '1.4.0'
+    id 'java'
+}
+
+group 'io.github.padreati'
+version '3.0.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation fileTree(dir: '/home/ati/work/rapaio/out/artifacts/rapaio_jar', include: '*.jar')
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+}
+
+// See https://github.com/JetBrains/gradle-intellij-plugin/
+intellij {
+    version = '2021.3.1'
+}
+patchPluginXml {
+    changeNotes = """
+      Add change notes here.<br>
+      <em>most HTML tags may be used</em>"""
+}
+test {
+    useJUnitPlatform()
+}

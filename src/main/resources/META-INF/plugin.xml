@@ -1,0 +1,62 @@
+<!--
+  ~ Apache License
+  ~ Version 2.0, January 2004
+  ~ http://www.apache.org/licenses/
+  ~
+  ~ Copyright 2013 - 2021 Aurelian Tutuianu
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~  http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<idea-plugin>
+<id>rapaio.studio</id>
+<name>Rapaio Studio</name>
+<version>2.2.1</version>
+<vendor email="padreati@yahoo.com" url="https://github.com/padreati/rapaio">rapaio</vendor>
+
+<description><![CDATA[
+      RapaioStudio is a rapaio printer library integrated into IDEA
+      ]]></description>
+
+<change-notes><![CDATA[
+            This is a change notes that must meet the 40 characters requirement.
+            ]]>
+</change-notes>
+
+<!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
+<idea-version since-build="193"/>
+
+<!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
+     on how to target different products -->
+<depends>com.intellij.modules.lang</depends>
+<depends>com.intellij.modules.platform</depends>
+
+<application-components>
+    <component>
+        <implementation-class>rapaio.studio.RapaioStudioServer</implementation-class>
+    </component>
+</application-components>
+
+<actions>
+    <!-- Add your actions here -->
+</actions>
+
+<extensions defaultExtensionNs="com.intellij">
+    <toolWindow id="RapaioGraphics" anchor="right" factoryClass="rapaio.studio.RapaioGraphicsToolWindowFactory"/>
+    <!--    <applicationService serviceImplementation="rapaio.studio.RapaioStudioServer"></applicationService>-->
+</extensions>
+
+</idea-plugin>
+
+

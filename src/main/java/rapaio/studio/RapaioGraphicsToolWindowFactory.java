@@ -36,8 +36,10 @@ import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import org.jetbrains.annotations.NotNull;
-import rapaio.graphics.base.*;
-import rapaio.printer.local.*;
+
+import rapaio.graphics.Figure;
+import rapaio.image.ImageTools;
+import rapaio.printer.local.FigurePanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -89,7 +91,7 @@ public class RapaioGraphicsToolWindowFactory implements ToolWindowFactory, Exten
             if (figure == null) {
                 return;
             }
-            BufferedImage bi = ImageUtility.buildImage(figure, getWidth(), getHeight());
+            BufferedImage bi = ImageTools.makeImage(figure, getWidth(), getHeight());
             figurePanel = new FigurePanel(bi);
             figurePanel.setVisible(true);
             myToolWindowContent.setLayout(new BorderLayout());

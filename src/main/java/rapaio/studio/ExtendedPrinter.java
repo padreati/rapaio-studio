@@ -27,9 +27,7 @@
 
 package rapaio.studio;
 
-import rapaio.graphics.base.Figure;
-
-import java.awt.image.BufferedImage;
+import rapaio.graphics.Figure;
 
 /**
  * User: Aurelian Tutuianu <paderati@yahoo.com>
